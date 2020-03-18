@@ -58,16 +58,30 @@ Arbre234 RechercherCle(Arbre234 a, int cle)
     for(i=0;a->cles[i]<cle && i<a->t-1;i++)
     if(cle==a->cles[i])return a;
     if(cle>a->cles[i])return RechercherCle(a->fils[i+1],cle);
-    return RechercherCle(a->fils[i],cle);
-        
+    return RechercherCle(a->fils[i],cle);     
 }
 
 void AnalyseStructureArbre(Arbre234 a, int *feuilles, int *noeud2, int *noeud3, int *noeud4)
 {
+    if(a->t==0)return (*feuilles)++;
+    if(a->t==2)return (*noeud2)++;
+    if(a->t==3)return (*noeud3)++;
+    if(a->t==4)return (*noeud4)++;
+    for(int i=0;i<a->t;i++){
+        AnalyseStructureArbre(a->fils[i],*feuilles,*noeud2,*noeud3,*noeud4);
+    }
 }
 
 int somme_cles(Arbre234 a)
 {
+    if(a->t==0)return a->cles[0];
+    int res=0;
+    int i;
+    for(i=0;i<a->t-1;i++){
+        res+=somme_cles(a->fils[i]);
+        res+=a->cles[i];
+    }
+    return res+somme_cles(a->fils[i+1]);;
 }
 
 Arbre234 noeud_max(Arbre234 a)
