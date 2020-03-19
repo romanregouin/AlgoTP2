@@ -28,11 +28,17 @@ int hauteur(Arbre234 a)
 
 int NombreCles(Arbre234 a)
 {
-    if(a->t==0)return 1;
+    if(a->t==0)return 0;
     int res=a->t-1;
-    for(int i=0;i<a->t;i++){
-        res+=NombreCles(a->fils[i]);
-    }
+    if (a->t==2){
+		res+=NombreCles(a->fils[1]);
+		res+=NombreCles(a->fils[2]);
+	}
+	else{
+		for(int i=0;i<a->t;i++){
+			res+=NombreCles(a->fils[i]);
+		}
+	}
     return res;
 }
 
@@ -61,7 +67,7 @@ Arbre234 RechercherCle(Arbre234 a, int cle)
     return RechercherCle(a->fils[i],cle);     
 }
 
-void AnalyseStructureArbre(Arbre234 a, int *feuilles, int *noeud2, int *noeud3, int *noeud4)
+/*void AnalyseStructureArbre(Arbre234 a, int *feuilles, int *noeud2, int *noeud3, int *noeud4)
 {
     if(a->t==0)return (*feuilles)++;
     if(a->t==2)return (*noeud2)++;
@@ -70,7 +76,7 @@ void AnalyseStructureArbre(Arbre234 a, int *feuilles, int *noeud2, int *noeud3, 
     for(int i=0;i<a->t;i++){
         AnalyseStructureArbre(a->fils[i],*feuilles,*noeud2,*noeud3,*noeud4);
     }
-}
+}*/
 
 int somme_cles(Arbre234 a)
 {
@@ -81,11 +87,12 @@ int somme_cles(Arbre234 a)
         res+=somme_cles(a->fils[i]);
         res+=a->cles[i];
     }
-    return res+somme_cles(a->fils[i+1]);;
+    return res+somme_cles(a->fils[i+1]);
 }
 
 Arbre234 noeud_max(Arbre234 a)
 {
+	return NULL;
 }
 
 void Afficher_Cles_Largeur(Arbre234 a)
@@ -102,6 +109,7 @@ void Affichage_Cles_Triees_NonRecursive(Arbre234 a)
 
 Arbre234 RechercherPere(Arbre234 a, Arbre234 pere, int cle)
 {
+	return NULL;
 }
 
 void Detruire_Cle(Arbre234 *a, int cle)
@@ -111,7 +119,7 @@ void Detruire_Cle(Arbre234 *a, int cle)
 int main(int argc, char **argv)
 {
     Arbre234 a;
-    int suppr = 0;
+    //int suppr = 0;
 
     if (argc != 2)
     {
@@ -124,6 +132,8 @@ int main(int argc, char **argv)
     printf("==== Afficher arbre ====\n");
 
     afficher_arbre(a, 0);
+    int nb = NombreCles(a);
+    printf("\nNombre de cles = %d\n",nb);
 
     return 0;
 }
