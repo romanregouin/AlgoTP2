@@ -97,14 +97,121 @@ Arbre234 noeud_max(Arbre234 a)
 
 void Afficher_Cles_Largeur(Arbre234 a)
 {
+	if(a==NULL || a->t==0){
+		printf("L'arbre est vide");
+	}
+	pfile_t f=creer_file();
+	Arbre234 c;
+	enfiler(f,a);
+	while(!file_vide(f)){
+		c = defiler(f);
+		switch(c->t)
+		{
+			case 0:
+				break;
+			case 2:
+				printf("%d ",c->cles[1]);
+				enfiler(f,c->fils[1]);
+				enfiler(f,c->fils[2]);
+				break;
+			case 3:
+				printf("%d ",c->cles[0]);
+				printf("%d ",c->cles[1]);
+				enfiler(f,c->fils[0]);
+				enfiler(f,c->fils[1]);
+				enfiler(f,c->fils[2]);
+				break;
+			case 4:
+				printf("%d ",c->cles[0]);
+				printf("%d ",c->cles[1]);
+				printf("%d ",c->cles[2]);
+				enfiler(f,c->fils[0]);
+				enfiler(f,c->fils[1]);
+				enfiler(f,c->fils[2]);
+				enfiler(f,c->fils[3]);
+				break;
+			default:
+				break;
+		}
+	}
+
 }
 
 void Affichage_Cles_Triees_Recursive(Arbre234 a)
 {
+	if(a==NULL){
+		printf("L'arbre est vide");
+	}
+	switch(a->t)
+	{
+		case 0:
+			return;
+		case 2:
+			Affichage_Cles_Triees_Recursive(a->fils[1]);
+			printf("%d ",a->cles[1]);
+			Affichage_Cles_Triees_Recursive(a->fils[2]);
+			break;
+		case 3:
+			Affichage_Cles_Triees_Recursive(a->fils[0]);
+			printf("%d ",a->cles[0]);
+			Affichage_Cles_Triees_Recursive(a->fils[1]);
+			printf("%d ",a->cles[1]);
+			Affichage_Cles_Triees_Recursive(a->fils[2]);
+			break;
+		case 4:
+			Affichage_Cles_Triees_Recursive(a->fils[0]);
+			printf("%d ",a->cles[0]);
+			Affichage_Cles_Triees_Recursive(a->fils[1]);
+			printf("%d ",a->cles[1]);
+			Affichage_Cles_Triees_Recursive(a->fils[2]);
+			printf("%d ",a->cles[2]);
+			Affichage_Cles_Triees_Recursive(a->fils[3]);
+			break;
+		default:
+			return;
+	}
 }
 
 void Affichage_Cles_Triees_NonRecursive(Arbre234 a)
 {
+	if(a==NULL || a->t==0){
+		printf("L'arbre est vide");
+	}
+	ppile_t p=creer_pile();
+	Arbre234 c;
+	enpiler(p,a);
+	while(!pile_vide(p)){
+		c = depiler(p);
+		switch(c->t)
+		{
+			case 0:
+				break;
+			case 2:
+				printf("%d ",c->cles[1]);
+				enfiler(f,c->fils[1]);
+				enfiler(f,c->fils[2]);
+				break;
+			case 3:
+				printf("%d ",c->cles[0]);
+				printf("%d ",c->cles[1]);
+				enfiler(f,c->fils[0]);
+				enfiler(f,c->fils[1]);
+				enfiler(f,c->fils[2]);
+				break;
+			case 4:
+				printf("%d ",c->cles[0]);
+				printf("%d ",c->cles[1]);
+				printf("%d ",c->cles[2]);
+				enfiler(f,c->fils[0]);
+				enfiler(f,c->fils[1]);
+				enfiler(f,c->fils[2]);
+				enfiler(f,c->fils[3]);
+				break;
+			default:
+				break;
+		}
+	}
+	
 }
 
 Arbre234 RechercherPere(Arbre234 a, Arbre234 pere, int cle)
@@ -132,8 +239,16 @@ int main(int argc, char **argv)
     printf("==== Afficher arbre ====\n");
 
     afficher_arbre(a, 0);
-    int nb = NombreCles(a);
-    printf("\nNombre de cles = %d\n",nb);
+    
+    printf("\nNombre de cles = %d\n",NombreCles(a));
+    
+    printf("\nAffichage clés largeur :\n");
+    Afficher_Cles_Largeur(a);
+    printf("\n");
+    
+    printf("\nAffichage clés triées récursive :\n");
+    Affichage_Cles_Triees_Recursive(a);
+    printf("\n");
 
     return 0;
 }
