@@ -86,10 +86,17 @@ int somme_cles(Arbre234 a)
 
 Arbre234 noeud_max(Arbre234 a)
 {
+    /*if(a->t==0)return a;
+    Arbre234 b=noeud_max(a->t-1);
+    for(int i=0;i<a->t-1;i++){
+        if()
+    }*/
+
 }
 
 void Afficher_Cles_Largeur(Arbre234 a)
 {
+    
 }
 
 void Affichage_Cles_Triees_Recursive(Arbre234 a)
