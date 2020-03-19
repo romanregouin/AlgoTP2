@@ -63,8 +63,8 @@ int CleMax(Arbre234 a)
         if(a->t!=4)return a->cles[1];
         return a->cles[2];
     }
-    if(a->t!=4)return CleMax(a->fils[1]);
-    return CleMax(a->fils[2]);
+    if(a->t!=4)return CleMax(a->fils[2]);
+    return CleMax(a->fils[3]);
 }
 
 int CleMin(Arbre234 a)
@@ -74,8 +74,8 @@ int CleMin(Arbre234 a)
         if(a->t!=2)return a->cles[0];
         return a->cles[1];
     }
-    if(a->t!=2)return CleMax(a->fils[0]);
-    return CleMax(a->fils[0]);
+    if(a->t!=2)return CleMin(a->fils[0]);
+    return CleMin(a->fils[1]);
 }
 
 Arbre234 RechercherCle(Arbre234 a, int cle)
@@ -83,10 +83,37 @@ Arbre234 RechercherCle(Arbre234 a, int cle)
     if(a==NULL || a->t==0)return NULL;
     int i=0;
     if(a->t==2)i=1;
-    for(;a->cles[i]<cle && i<a->t-1;i++)
+    for(;i<a->t-1 && a->cles[i]<cle;i++)
     if(cle==a->cles[i])return a;
     if(cle>a->cles[i])return RechercherCle(a->fils[i+1],cle);
     return RechercherCle(a->fils[i],cle);     
+}
+
+Arbre234 RechercherCle2(Arbre234 a, int cle)
+{
+	if(a==NULL || a->t==0)return NULL;
+	if(a->t==2){
+		if(cle==a->cles[1])return a;
+		else if(cle < a->cles[1]) return RechercherCle2(a->fils[1],cle);
+		else return RechercherCle2(a->fils[2],cle);
+	}
+	if(a->t==3){
+		if(cle==a->cles[0] || cle==a->cles[1])return a;
+		else if(cle < a->cles[0]) return RechercherCle2(a->fils[0],cle);
+		else if(cle < a->cles[1]) return RechercherCle2(a->fils[1],cle);
+		else{
+			return RechercherCle2(a->fils[2],cle);
+		}
+	}
+	else{ //a->t ==4
+		if(cle==a->cles[0] || cle==a->cles[1] || cle==a->cles[2])return a;
+		else if(cle < a->cles[0]) return RechercherCle2(a->fils[0],cle);
+		else if(cle < a->cles[1]) return RechercherCle2(a->fils[1],cle);
+		else if(cle < a->cles[2]) return RechercherCle2(a->fils[2],cle);
+		else {
+			return RechercherCle2(a->fils[3],cle);
+		}
+	}
 }
 
 void AnalyseStructureArbre(Arbre234 a, int *feuilles, int *noeud2, int *noeud3, int *noeud4)
@@ -182,11 +209,6 @@ void Affichage_Cles_Triees_NonRecursive(Arbre234 a)
 	
 }
 
-Arbre234 RechercherPere(Arbre234 a, Arbre234 pere, int cle)
-{
-	return NULL;
-}
-
 void Detruire_Cle(Arbre234 *a, int cle)
 {
 }
@@ -209,6 +231,17 @@ int main(int argc, char **argv)
     afficher_arbre(a, 0);
     
     printf("\nNombre de cles = %d\n",NombreCles(a));
+    printf("\nCle max = %d\n",CleMax(a));
+    printf("\nCle min = %d\n",CleMin(a));
+    
+    printf("\nTests de recherche:\n");
+    Arbre234 res;
+    int cles[20]={50,2,3,10,7,1,280,80,500,301,200,12,375,13,11,252,1000,82,40,6};
+    for (int i=0;i<20;i++){
+		res=RechercherCle2(a, cles[i]);
+		if (res==NULL){printf("res recherche cle %d = null\n",cles[i]);}
+		else{printf("res recherche cle %d = %d\n",cles[i],res->cles[1]);}
+	}
     
     int nb_feuilles=0,nb_2n=0,nb_3n=0,nb_4n=0;
     AnalyseStructureArbre(a,&nb_feuilles,&nb_2n,&nb_3n,&nb_4n);
