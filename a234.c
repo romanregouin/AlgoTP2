@@ -144,14 +144,20 @@ int somme_cles(Arbre234 a)
     return res+somme_cles(a->fils[i+1+j]);
 }
 
-Arbre234 noeud_max(Arbre234 a)
-{
-    /*if(a->t==0)return a;
-    Arbre234 b=noeud_max(a->t-1);
-    for(int i=0;i<a->t-1;i++){
-        if()
-    }*/
 
+/*Arbre234 noeud_max(Arbre234 a){
+
+}
+*/
+void noeud_max(Arbre234 a,Arbre234* res)
+{
+    if(a==NULL)return;
+    if(*res==NULL)*res=a;
+    else if(a->s>(*res)->s)*res=a;
+    noeud_max(a->fils[0],res);
+    noeud_max(a->fils[1],res);
+    noeud_max(a->fils[2],res);
+    noeud_max(a->fils[3],res);
 }
 
 void Afficher_Cles_Largeur(Arbre234 a)
@@ -254,6 +260,12 @@ int main(int argc, char **argv)
     printf("\nAffichage clés triées récursive :\n");
     Affichage_Cles_Triees_Recursive(a);
     printf("\n");
+
+    printf("\nAffichage du noeud Max :\n");
+    Arbre234 res2;
+    noeud_max(a,&res2);
+    printf("\n");
+    printf("Noeud max: %d \n",res2->cles[1]);
 
     return 0;
 }

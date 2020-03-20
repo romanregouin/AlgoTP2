@@ -5,6 +5,7 @@
 
 typedef struct n
 {
+    int s;/* contient la somme des valeurs des clefs*/
     int t; /* t type de noeud 0, 2, 3 ou 4 */
     int cles[3];
     struct n *fils[4];
