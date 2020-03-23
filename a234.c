@@ -276,7 +276,41 @@ void Affichage_Cles_Triees_NonRecursive(Arbre234 a)
     }
 }
 
-void RemoveKeyFromNode(Arbre234* a, int cle){
+//retourne d'indice de la clé max du noeud
+int IndiceKeyMaxFromNode(Arbre234* node){
+    int max1 = max((*node)->cles[0],(*node)->cles[1]);
+    int max2 = max(max1,(*node)->cles[2]);
+    switch((*node)->t){
+        case 0 :
+            return -1;
+            break;
+        case 2 :
+            return 1;
+            break;
+        case 3 :
+            if(max1==(*node)->cles[0]){
+                return 0;
+            }else{
+                return 1;
+            }
+            break;
+        case 4 :
+            if(max2==(*node)->cles[0]){
+                return 0;
+            }else if(max2==(*node)->cles[1]){
+                return 1;
+            }else{
+                return 2;
+            }
+            break;
+        default : //ne doit jamais arriver !
+            return -2;
+            break;
+    }
+    return -2; //le switch doit déjà gérer tout les cas!
+}
+
+void RemoveKeyFromNode(Arbre234* a, Arbre234* parent, int cle){
     if((*a)->t==0){
         return;
     }
@@ -300,8 +334,15 @@ void RemoveKeyFromNode(Arbre234* a, int cle){
                 (*a)->t--;
                 return;
             }
-        }else{
+        }else{ //cas ou t=2 si pas de bug
             if(((*a)->cles[i]==cle)&&(i==1)){
+                if(((*parent)->fils[1])->t==4){ //prend que le cas de la clef la plus grande
+
+                }else if(((*parent)->fils[1])->t==3){
+                    //(*parent)->cles[2] = (*parent)->fils[1]->cles[IndiceKeyMaxFromNode((*parent)->fils[1])]//diapo 9 du cours detruire arbre
+                }else if(((*parent)->fils[1])->t==2){
+
+                }
                 (*a)->t = 0;
                 return;
             }
@@ -310,22 +351,22 @@ void RemoveKeyFromNode(Arbre234* a, int cle){
     return;
 }
 
-void Detruire_Cle(Arbre234 *a, int cle){
+void Detruire_Cle(Arbre234 *a,Arbre234 *parent, int cle){
 
     if((*a)!=NULL){
         if((*a)->t!=0){
             if(feuille(*a)){
-                RemoveKeyFromNode(a,cle);
+                RemoveKeyFromNode(a,parent,cle);
                 return;
             }
             if((*a)->t==0){
                 return;
             }else if((*a)->t==2){
-                Detruire_Cle(&((*a)->fils[1]),cle);
-                Detruire_Cle(&((*a)->fils[2]),cle);
+                Detruire_Cle(&((*a)->fils[1]),a,cle);
+                Detruire_Cle(&((*a)->fils[2]),a,cle);
             }else if(((*a)->t==3)||((*a)->t==4)){
                 for(int i=0;i<(*a)->t;i++){
-                    Detruire_Cle(&((*a)->fils[i]),cle);
+                    Detruire_Cle(&((*a)->fils[i]),a,cle);
                 }
             }
         }
@@ -399,7 +440,9 @@ int main(int argc, char **argv)
     int keytoremove = atoi(argv[2]);
     printf("Arbre :\n");
     afficher_arbre(TestRemovekeyNode,0);
-    Detruire_Cle(&TestRemovekeyNode,keytoremove);
+    int indice = IndiceKeyMaxFromNode(&(TestRemovekeyNode->fils[2]));
+    printf("indice clef max test truc bidule : %d (%d)\n",indice,TestRemovekeyNode->fils[2]->cles[indice]);
+    Detruire_Cle(&TestRemovekeyNode,NULL,keytoremove);
     printf("Arbre avec clé %d supprimé :\n",keytoremove);
     afficher_arbre(TestRemovekeyNode,0);
 
