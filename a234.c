@@ -80,13 +80,12 @@ int CleMin(Arbre234 a)
 
 Arbre234 RechercherCle(Arbre234 a, int cle)
 {
-    if(a==NULL || a->t==0)return NULL;
+    if(a==NULL || (a!=NULL && a->t==0))return NULL;
+    int j=0;
     int i=0;
-    if(a->t==2)i=1;
-    for(;i<a->t-1 && a->cles[i]<cle;i++)
-    if(cle==a->cles[i])return a;
-    if(cle>a->cles[i])return RechercherCle(a->fils[i+1],cle);
-    return RechercherCle(a->fils[i],cle);     
+    if(a->t==2)j=1;
+    for(;i<a->t-1 && a->cles[i+j]<=cle;i++)if(cle==a->cles[i+j])return a;
+    return RechercherCle(a->fils[i+j],cle);     
 }
 
 Arbre234 RechercherCle2(Arbre234 a, int cle)
@@ -272,6 +271,17 @@ int main(int argc, char **argv)
     noeud_max(a,&res2);
     printf("\n");
     printf("Noeud max: %d \n",res2->cles[1]);
+
+    int res3;
+    res3=NombreCles(a);
+    printf("Il y a %d Cles \n",res3);
+    res3=CleMax(a);
+
+    printf("La Cle Max est %d \n",res3);
+
+    res3=CleMin(a);
+
+    printf("La Cle Min est %d \n",res3);
 
     return 0;
 }
