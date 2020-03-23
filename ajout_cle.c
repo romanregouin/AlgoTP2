@@ -158,8 +158,8 @@ void eclater_4noeud_interne (Arbre234 *a, Arbre234 pere, int cle, int niveau)
 	    eclat->cles [1] = c->cles [2] ;
 	    eclat->fils [1] = c->fils[2] ;
 	    eclat->fils [2] = c->fils [3] ;
-	    
 		c->s-=c->cles[2];
+
 	    pere->t = 4 ;
 	    pere->cles [2] = pere->cles [1] ;
 	    pere->cles [1] = pere->cles [0] ; 
@@ -169,6 +169,7 @@ void eclater_4noeud_interne (Arbre234 *a, Arbre234 pere, int cle, int niveau)
 	    pere->fils [2] = pere->fils [1] ;
 	    pere->fils [0] = c ;
 	    pere->fils [1] = eclat ;
+		c->s-=c->cles[1];
 
 	    c->t = 2 ;
 	    c->cles [1] = c->cles [0] ;
@@ -195,9 +196,8 @@ void eclater_4noeud_interne (Arbre234 *a, Arbre234 pere, int cle, int niveau)
 		pere->s+=c->cles[1];
 		pere->fils [3] = pere->fils [2] ;
 		pere->fils [2] = eclat ;
-
-
 		c->s-=c->cles[1];
+		
 		c->t = 2 ;
 		c->cles [1] = c->cles [0] ;
 		c->fils [2] = c->fils [1] ;
