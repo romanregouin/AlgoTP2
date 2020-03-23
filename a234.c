@@ -277,9 +277,12 @@ void Affichage_Cles_Triees_NonRecursive(Arbre234 a)
 }
 
 void RemoveKeyFromNode(Arbre234* a, int cle){
+    if((*a)->t==0){
+        return;
+    }
     for(int i=0;i<(*a)->t;i++){
-        if((*a)->cles[i]==cle){
-            if((*a)->t==4){
+        if((*a)->t==4){
+            if((*a)->cles[i]==cle){
                 if(!i){
                     (*a)->cles[0] = (*a)->cles[1];
                     (*a)->cles[1] = (*a)->cles[2];
@@ -288,13 +291,17 @@ void RemoveKeyFromNode(Arbre234* a, int cle){
                 }
                 (*a)->t--;
                 return;
-            }else if((*a)->t==3){
+            }
+        }else if((*a)->t==3){
+            if(((*a)->cles[i]==cle)&&(i!=2)){
                 if(i==1){
                     (*a)->cles[1] = (*a)->cles[0];
                 }
                 (*a)->t--;
                 return;
-            }else{
+            }
+        }else{
+            if(((*a)->cles[i]==cle)&&(i==1)){
                 (*a)->t = 0;
                 return;
             }
@@ -308,11 +315,18 @@ void Detruire_Cle(Arbre234 *a, int cle){
     if((*a)!=NULL){
         if((*a)->t!=0){
             if(feuille(*a)){
-            RemoveKeyFromNode(a,cle);
-            return;
+                RemoveKeyFromNode(a,cle);
+                return;
             }
-            for(int i=0;i<4;i++){
-                Detruire_Cle(&((*a)->fils[i]),cle);
+            if((*a)->t==0){
+                return;
+            }else if((*a)->t==2){
+                Detruire_Cle(&((*a)->fils[1]),cle);
+                Detruire_Cle(&((*a)->fils[2]),cle);
+            }else if(((*a)->t==3)||((*a)->t==4)){
+                for(int i=0;i<(*a)->t;i++){
+                    Detruire_Cle(&((*a)->fils[i]),cle);
+                }
             }
         }
     }
