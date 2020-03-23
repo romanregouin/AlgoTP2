@@ -214,14 +214,47 @@ void Affichage_Cles_Triees_NonRecursive(Arbre234 a)
 	
 }
 
-void Detruire_Cle(Arbre234 *a, int cle){
-
-    if(feuille(&a)){
-        if((*a)->t>=2){
-            
+void RemoveKeyFromNode(Arbre234* a, int cle){
+    for(int i=0;i<(*a)->t;i++){
+        if((*a)->cles[i]==cle){
+            if((*a)->t==4){
+                if(!i){
+                    (*a)->cles[0] = (*a)->cles[1];
+                    (*a)->cles[1] = (*a)->cles[2];
+                }else if(i==1){
+                    (*a)->cles[1] = (*a)->cles[2];
+                }
+                (*a)->t--;
+                return;
+            }else if((*a)->t==3){
+                if(i==1){
+                    (*a)->cles[1] = (*a)->cles[0];
+                }
+                (*a)->t--;
+                return;
+            }else{
+                (*a)->t = 0;
+                return;
+            }
         }
     }
+    return;
+}
 
+void Detruire_Cle(Arbre234 *a, int cle){
+
+    if((*a)!=NULL){
+        if((*a)->t!=0){
+            if(feuille(*a)){
+            RemoveKeyFromNode(a,cle);
+            return;
+            }
+            for(int i=0;i<4;i++){
+                Detruire_Cle(&((*a)->fils[i]),cle);
+            }
+        }
+    }
+    return;
 }
 
 int main(int argc, char **argv)
@@ -229,9 +262,9 @@ int main(int argc, char **argv)
     Arbre234 a;
     //int suppr = 0;
 
-    if (argc != 2)
+    if (argc != 3)
     {
-        fprintf(stderr, "Usage : %s <nom fichier>\n", argv[0]);
+        fprintf(stderr, "Usage : %s <nom fichier> <keytoremove>\n", argv[0]);
         exit(-1);
     }
 
@@ -282,6 +315,15 @@ int main(int argc, char **argv)
     res3=CleMin(a);
 
     printf("La Cle Min est %d \n",res3);
+
+    Arbre234 TestRemovekeyNode = lire_arbre(argv[1]);
+    int keytoremove = atoi(argv[2]);
+    printf("Arbre :\n");
+    afficher_arbre(TestRemovekeyNode,0);
+    Detruire_Cle(&TestRemovekeyNode,keytoremove);
+    printf("Arbre avec clé %d supprimé :\n",keytoremove);
+    afficher_arbre(TestRemovekeyNode,0);
+
 
     return 0;
 }
