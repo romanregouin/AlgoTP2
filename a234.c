@@ -9,7 +9,7 @@
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
 
-
+// 1 -> est feuille 0 sinon
 int feuille(Arbre234 a){
     if(a==NULL || a->t==0)return 0;
     if(a->t==2 && (a->fils[1]->t==0 ||a->fils[1]==NULL) && (a->fils[2]->t==0 ||a->fils[2]==NULL))return 1;
@@ -215,8 +215,14 @@ void Affichage_Cles_Triees_NonRecursive(Arbre234 a)
 	
 }
 
-void Detruire_Cle(Arbre234 *a, int cle)
-{
+void Detruire_Cle(Arbre234 *a, int cle){
+
+    if(feuille(&a)){
+        if((*a)->t>=2){
+            
+        }
+    }
+
 }
 
 int main(int argc, char **argv)
