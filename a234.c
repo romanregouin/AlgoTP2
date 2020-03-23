@@ -153,7 +153,7 @@ int somme_cles2(Arbre234 a)
     else{
         int res=0;
         for(int i=0;i<a->t;i++){
-            res+=somme_cles(a->fils[i]);
+            res+=somme_cles2(a->fils[i]);
         }
         return res+a->s;
     }
