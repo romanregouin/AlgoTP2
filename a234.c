@@ -5,6 +5,7 @@
 #include "a234.h"
 #include "pile.h"
 #include "file.h"
+#include "pile.h"
 
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
@@ -80,7 +81,7 @@ int CleMin(Arbre234 a)
 
 Arbre234 RechercherCle(Arbre234 a, int cle)
 {
-    if(a==NULL || (a!=NULL && a->t==0))return NULL;
+    if(a==NULL || a->t==0)return NULL;
     int j=0;
     int i=0;
     if(a->t==2)j=1;
@@ -140,14 +141,25 @@ int somme_cles(Arbre234 a)
         res+=somme_cles(a->fils[i+j]);
         res+=a->cles[i+j];
     }
-    return res+somme_cles(a->fils[i+1+j]);
+    return res+somme_cles(a->fils[i+j]);
 }
 
 
-/*Arbre234 noeud_max(Arbre234 a){
 
+int somme_cles2(Arbre234 a)
+{
+    if(a==NULL || a->t==0)return 0;
+    if(a->t==2)return a->s+somme_cles2(a->fils[1])+somme_cles2(a->fils[2]);
+    else{
+        int res=0;
+        for(int i=0;i<a->t;i++){
+            res+=somme_cles(a->fils[i]);
+        }
+        return res+a->s;
+    }
 }
-*/
+
+
 void noeud_max(Arbre234 a,Arbre234* res)
 {
     if(a==NULL)return;
@@ -209,9 +221,59 @@ void Affichage_Cles_Triees_Recursive(Arbre234 a)
 
 }
 
+
+
+void afficher_cles_noeud(Arbre234 a){
+    if(a->t==2)printf("%d ",a->cles[1]);
+    else{
+        for(int i=0;i<a->t-1;i++){
+            printf("%d ",a->cles[i]);
+        }
+    }
+}
+
+
 void Affichage_Cles_Triees_NonRecursive(Arbre234 a)
 {
-	
+	ppile_t p=creer_pile();
+    empiler(p,a);
+    Arbre234 courant,tmp;
+    while(!pile_vide(p)){
+        courant=depiler(p);
+        if(courant->c==0){
+            while(!feuille(courant)){
+                if(courant->t==2){
+                    tmp=courant->fils[1];
+                    courant->c=1;
+                }
+                else {
+                    tmp=courant->fils[0];
+                    courant->c=1;
+                }
+                empiler(p,courant);
+                courant=tmp;
+            }
+        }
+        if(feuille(courant))afficher_cles_noeud(courant);
+        else if(courant->t==2 ){
+            if(courant->c<2){
+                printf("%d ",courant->cles[1]);
+                tmp=courant->fils[2];
+                courant->c++;
+                empiler(p,courant);
+                empiler(p,tmp);
+            }
+        }else{
+            if(courant->c<courant->t){
+                printf("%d ",courant->cles[courant->c-1]);
+                tmp=courant->fils[courant->c];
+                courant->c++;
+                empiler(p,courant);
+                empiler(p,tmp);
+            }
+        }
+        
+    }
 }
 
 void RemoveKeyFromNode(Arbre234* a, int cle){
@@ -299,6 +361,9 @@ int main(int argc, char **argv)
     Affichage_Cles_Triees_Recursive(a);
     printf("\n");
 
+    printf("\nAffichage clés triées non récursive :\n");
+    Affichage_Cles_Triees_NonRecursive(a);
+    printf("\n");
     printf("\nAffichage du noeud Max :\n");
     Arbre234 res2;
     noeud_max(a,&res2);
@@ -324,6 +389,13 @@ int main(int argc, char **argv)
     printf("Arbre avec clé %d supprimé :\n",keytoremove);
     afficher_arbre(TestRemovekeyNode,0);
 
+    res3=somme_cles(a);
+
+    printf("La somme des clefs de l'arbre est %d \n",res3);
+
+    res3=somme_cles2(a);
+
+    printf("La somme2 des clefs de l'arbre est %d \n",res3);
 
     return 0;
 }
