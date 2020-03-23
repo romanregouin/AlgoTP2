@@ -9,6 +9,7 @@ pnoeud234 allouer_noeud ()
   pnoeud234 p  = (pnoeud234) malloc (sizeof(noeud234)) ;
   p->s=0;
   p->t = 0 ;
+  p->c=0;
   p->fils[0] = NULL ;
   p->fils[1] = NULL ;
   p->fils[2] = NULL ;

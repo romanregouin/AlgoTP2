@@ -6,6 +6,7 @@
 typedef struct n
 {
     int s;/* contient la somme des valeurs des clefs*/
+    int c;/* contient l'indice du fils suivant a afficher (pour fonction Affciher_trier_nonrécursive)*/
     int t; /* t type de noeud 0, 2, 3 ou 4 */
     int cles[3];
     struct n *fils[4];
