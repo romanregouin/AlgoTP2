@@ -262,7 +262,7 @@ void Affichage_Cles_Triees_NonRecursive(Arbre234 a)
                 courant->c++;
                 empiler(p,courant);
                 empiler(p,tmp);
-            }
+            }else courant->c=0;
         }else{
             if(courant->c<courant->t){
                 printf("%d ",courant->cles[courant->c-1]);
@@ -270,7 +270,7 @@ void Affichage_Cles_Triees_NonRecursive(Arbre234 a)
                 courant->c++;
                 empiler(p,courant);
                 empiler(p,tmp);
-            }
+            }else courant->c=0;
         }
         
     }
@@ -418,6 +418,10 @@ int main(int argc, char **argv)
 
     printf("\nAffichage clés triées non récursive :\n");
     Affichage_Cles_Triees_NonRecursive(a);
+
+    printf("\nAffichage clés triées non récursive :\n");
+    Affichage_Cles_Triees_NonRecursive(a);
+
     printf("\n");
     printf("\nAffichage du noeud Max :\n");
     Arbre234 res2;
