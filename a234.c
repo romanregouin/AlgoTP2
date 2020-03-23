@@ -5,6 +5,7 @@
 #include "a234.h"
 #include "pile.h"
 #include "file.h"
+#include "pile.h"
 
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
@@ -140,14 +141,10 @@ int somme_cles(Arbre234 a)
         res+=somme_cles(a->fils[i+j]);
         res+=a->cles[i+j];
     }
-    return res+somme_cles(a->fils[i+1+j]);
+    return res+somme_cles(a->fils[i+j]);
 }
 
 
-/*Arbre234 noeud_max(Arbre234 a){
-
-}
-*/
 void noeud_max(Arbre234 a,Arbre234* res)
 {
     if(a==NULL)return;
@@ -211,7 +208,11 @@ void Affichage_Cles_Triees_Recursive(Arbre234 a)
 
 void Affichage_Cles_Triees_NonRecursive(Arbre234 a)
 {
-	
+	ppile_t p=creer_pile();
+    empiler(p,a);
+    while(!pile_vide(p)){
+        
+    }
 }
 
 void Detruire_Cle(Arbre234 *a, int cle)
@@ -276,6 +277,10 @@ int main(int argc, char **argv)
     res3=CleMin(a);
 
     printf("La Cle Min est %d \n",res3);
+
+    res3=somme_cles(a);
+
+    printf("La somme des clefs de l'arbre est %d \n",res3);
 
     return 0;
 }
