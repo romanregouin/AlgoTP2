@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": ["data/arbrecours"],
+            "args": ["data/arbre4","80"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
