@@ -374,6 +374,47 @@ void Detruire_Cle(Arbre234 *a,Arbre234 *parent, int cle){
     return;
 }
 
+
+
+void detruire_clef_feuille(Arbre234* a, Arbre234* parent, int pos){
+    switch ((*a)->t){
+        case 0:return;
+        case 2:
+            if((*parent)->t!=2){
+                
+            }else{
+                
+            }
+        break;
+        default:
+            for(int i=pos;i<(*a)->t-1;i++){
+                (*a)->cles[i]=(*a)->cles[i+1];
+            }
+        break;
+    }
+    return;
+}
+
+void Detruire_Cle_Liam(Arbre234 *a,Arbre234 *parent, int cle){
+    if((*a)==NULL || (*a)->t==0)return;
+    int j=0;
+    int i=0;
+    if((*a)->t==2)j=1;
+    for(;i<(*a)->t-1 && (*a)->cles[i+j]<cle;i++);
+    if(cle==(*a)->cles[i+j]){
+        if(feuille(*a)){
+            RemoveKeyFromNode(a,parent,cle);
+            return;
+        }else{
+            
+        }
+    }
+    Detruire_Cle_Liam(&((*a)->fils[i+j]),a,cle);
+    return;
+}
+
+
+
 int main(int argc, char **argv)
 {
     Arbre234 a;
