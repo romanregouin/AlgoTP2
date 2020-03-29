@@ -442,51 +442,54 @@ void Detruire_Cle_Noeud(Arbre234 a,int pos){
 }
 
 void doit_fusionner(Arbre234 a){
+    if(a==NULL || a->t==0)return;
     if(a->t==2 && a->fils[1]->t==2 && a->fils[2]->t==2){
         a->t=4;
         a->cles[0]=a->fils[1]->cles[1];
         a->cles[2]=a->fils[2]->cles[1];
         a->fils[0]=a->fils[1]->fils[1];
         a->fils[1]=a->fils[1]->fils[2];
-        a->fils[2]=a->fils[2]->fils[1];
         a->fils[3]=a->fils[2]->fils[2];
-    }
-    for(int i=0;i<a->t-2;i++){
-        if(a->fils[i]->t==2 && a->fils[i+1]->t==2){
-            if(a->t==3){
-                if(i==0){
-                    a->t=2;
-                    a->fils[1]->t=4;
-                    a->fils[1]->cles[2]=a->fils[1]->cles[1];
-                    a->fils[1]->cles[1]=a->cles[0];
-                    a->fils[1]->cles[0]=a->fils[0]->cles[1];
-                    a->fils[1]->fils[3]=a->fils[1]->fils[2];
-                    a->fils[1]->fils[2]=a->fils[1]->fils[1];  
-                    a->fils[1]->fils[0]=a->fils[0]->fils[1];
-                    a->fils[1]->fils[1]=a->fils[0]->fils[2];
-                }else{
-                    a->t=2;
-                    a->fils[2]->t=4;
-                    a->fils[2]->cles[2]=a->fils[2]->cles[1];
-                    a->fils[2]->cles[1]=a->cles[1];
-                    a->fils[2]->cles[0]=a->fils[1]->cles[1];
-                    a->cles[1]=a->cles[0];
-                    a->fils[1]=a->fils[0];
-                    a->fils[2]->fils[3]=a->fils[2]->fils[2];
-                    a->fils[2]->fils[2]=a->fils[2]->fils[1];  
-                    a->fils[2]->fils[0]=a->fils[1]->fils[1];
-                    a->fils[2]->fils[1]=a->fils[1]->fils[2];
+        a->fils[2]=a->fils[2]->fils[1]; 
+    }else if(a->t!=2){
+        for(int i=0;i<a->t-1;i++){
+            if(a->fils[i]->t==2 && a->fils[i+1]->t==2){
+                if(a->t==3){
+                    if(i==0){
+                        a->t=2;
+                        a->fils[1]->t=4;
+                        a->fils[1]->cles[2]=a->fils[1]->cles[1];
+                        a->fils[1]->cles[1]=a->cles[0];
+                        a->fils[1]->cles[0]=a->fils[0]->cles[1];
+                        a->fils[1]->fils[3]=a->fils[1]->fils[2];
+                        a->fils[1]->fils[2]=a->fils[1]->fils[1];  
+                        a->fils[1]->fils[0]=a->fils[0]->fils[1];
+                        a->fils[1]->fils[1]=a->fils[0]->fils[2];
+                    }else{
+                        a->t=2;
+                        a->fils[2]->t=4;
+                        a->fils[2]->cles[2]=a->fils[2]->cles[1];
+                        a->fils[2]->cles[1]=a->cles[1];
+                        a->fils[2]->cles[0]=a->fils[1]->cles[1];
+                        a->cles[1]=a->cles[0];
+                        a->fils[1]=a->fils[0];
+                        a->fils[2]->fils[3]=a->fils[2]->fils[2];
+                        a->fils[2]->fils[2]=a->fils[2]->fils[1];  
+                        a->fils[2]->fils[0]=a->fils[1]->fils[1];
+                        a->fils[2]->fils[1]=a->fils[1]->fils[2];
 
+                    }
+                }else{
+                    a->fils[i]->t=4;
+                    a->fils[i]->cles[0]=a->fils[i]->cles[1];
+                    a->fils[i]->cles[1]=a->cles[i];
+                    a->fils[i]->cles[2]=a->fils[i+1]->cles[1];
+                    for(int j=i;j<a->t-2;j++){
+                        a->cles[j]=a->cles[j+1];
+                        a->fils[j+1]=a->fils[j+2];
+                    }
+                    a->t--;
                 }
-            }else{
-                a->fils[i]->cles[0]=a->fils[i]->cles[1];
-                a->fils[i]->cles[1]=a->cles[i];
-                a->fils[i]->cles[2]=a->fils[i+1]->cles[1];
-                for(int j=i;i<a->t-2;j++){
-                    a->cles[j]=a->cles[j+1];
-                    a->fils[j+1]=a->fils[j+2];
-                }
-                a->t--;
             }
         }
     }
@@ -588,6 +591,14 @@ int main(int argc, char **argv)
     //printf("indice clef max test truc bidule : %d (%d)\n",indice,TestRemovekeyNode->fils[2]->cles[indice]);
     Detruire_Cle_Liam(&TestRemovekeyNode,NULL,keytoremove,0);
     printf("Arbre avec clé %d supprimé :\n",keytoremove);
+    afficher_arbre(TestRemovekeyNode,0);
+
+    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,3,0);
+    printf("Arbre avec clé %d supprimé :\n",3);
+    afficher_arbre(TestRemovekeyNode,0);
+
+    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,11,0);
+    printf("Arbre avec clé %d supprimé :\n",11);
     afficher_arbre(TestRemovekeyNode,0);
 
     res3=somme_cles(a);
