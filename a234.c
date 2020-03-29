@@ -43,7 +43,7 @@ int hauteur(Arbre234 a)
 
 int NombreCles(Arbre234 a)
 {
-    if(a->t==0)return 0;
+    if(a==NULL || a->t==0)return 0;
     int res=a->t-1;
     if (a->t==2){
 		res+=NombreCles(a->fils[1]);
@@ -619,7 +619,7 @@ int main(int argc, char **argv)
     printf("Arbre avec clé %d supprimé :\n",200);
     afficher_arbre(TestRemovekeyNode,0);
 
-    
+
     res3=somme_cles(a);
 
     printf("La somme des clefs de l'arbre est %d \n",res3);
