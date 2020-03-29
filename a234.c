@@ -310,69 +310,6 @@ int IndiceKeyMaxFromNode(Arbre234* node){
     return -2; //le switch doit déjà gérer tout les cas!
 }
 
-void RemoveKeyFromNode(Arbre234* a, Arbre234* parent, int cle){
-    if((*a)->t==0){
-        return;
-    }
-    for(int i=0;i<(*a)->t;i++){
-        if((*a)->t==4){
-            if((*a)->cles[i]==cle){
-                if(!i){
-                    (*a)->cles[0] = (*a)->cles[1];
-                    (*a)->cles[1] = (*a)->cles[2];
-                }else if(i==1){
-                    (*a)->cles[1] = (*a)->cles[2];
-                }
-                (*a)->t--;
-                return;
-            }
-        }else if((*a)->t==3){
-            if(((*a)->cles[i]==cle)&&(i!=2)){
-                if(i==1){
-                    (*a)->cles[1] = (*a)->cles[0];
-                }
-                (*a)->t--;
-                return;
-            }
-        }else{ //cas ou t=2 si pas de bug
-            if(((*a)->cles[i]==cle)&&(i==1)){
-                if(((*parent)->fils[1])->t==4){ //prend que le cas de la clef la plus grande
-
-                }else if(((*parent)->fils[1])->t==3){
-                    //(*parent)->cles[2] = (*parent)->fils[1]->cles[IndiceKeyMaxFromNode((*parent)->fils[1])]//diapo 9 du cours detruire arbre
-                }else if(((*parent)->fils[1])->t==2){
-
-                }
-                (*a)->t = 0;
-                return;
-            }
-        }
-    }
-    return;
-}
-
-void Detruire_Cle(Arbre234 *a,Arbre234 *parent, int cle){
-
-    if((*a)!=NULL){
-        if((*a)->t!=0){
-            if(feuille(*a)){
-                RemoveKeyFromNode(a,parent,cle);
-                return;
-            }
-            if((*a)->t==0){
-                return;
-            }else if((*a)->t==2){
-                Detruire_Cle(&((*a)->fils[1]),a,cle);
-                Detruire_Cle(&((*a)->fils[2]),a,cle);
-            }else if(((*a)->t==3)||((*a)->t==4)){
-                for(int i=0;i<(*a)->t;i++){
-                    Detruire_Cle(&((*a)->fils[i]),a,cle);
-                }
-            }
-        }
-    }
-    return;
-}
 
 
 
@@ -382,42 +319,71 @@ void detruire_clef_feuille(Arbre234* a, Arbre234* parent, int pos1,int pos2){
         case 2:
             if(parent==NULL){
                 (*a)->t=0;
+                (*a)->s=0;
                 return;
             }
             if((*parent)->t==2){
                 if(pos2==1){
+                    (*a)->s=(*a)->s-(*a)->cles[1]+(*parent)->cles[1];
                     (*a)->cles[1]=(*parent)->cles[1];
+                    (*parent)->s=(*parent)->s-(*parent)->cles[1]+(*parent)->fils[2]->cles[0];
                     (*parent)->cles[1]=(*parent)->fils[2]->cles[0];
                     if((*parent)->fils[2]->t==4){
+                        (*parent)->fils[2]->s=(*parent)->fils[2]->s-(*parent)->fils[2]->cles[0]-(*parent)->fils[2]->cles[1]+(*parent)->fils[2]->cles[1]+(*parent)->fils[2]->cles[2];
                         (*parent)->fils[2]->cles[0]=(*parent)->fils[2]->cles[1];
                         (*parent)->fils[2]->cles[1]=(*parent)->fils[2]->cles[2];
                     }
+                    if((*parent)->fils[pos2+1]->t==2)(*parent)->fils[pos2+1]->s-= (*parent)->fils[pos2+1]->cles[ (*parent)->fils[pos2+1]->t-1]; // A verifier
+                    else(*parent)->fils[pos2+1]->s-= (*parent)->fils[pos2+1]->cles[ (*parent)->fils[pos2+1]->t-2];
                     (*parent)->fils[pos2+1]->t--;
                 }else{
+                    (*a)->s=(*a)->s-(*a)->cles[1]+(*parent)->cles[1];
                     (*a)->cles[1]=(*parent)->cles[1];
+                    (*parent)->s=(*parent)->s-(*parent)->cles[0]+(*parent)->fils[1]->cles[(*parent)->fils[1]->t-1];
                     (*parent)->cles[0]=(*parent)->fils[1]->cles[(*parent)->fils[1]->t-1];
-                    if((*parent)->fils[1]->t==3)(*parent)->fils[1]->cles[1]=(*parent)->fils[1]->cles[0];
+                    if((*parent)->fils[1]->t==3){
+                        (*parent)->fils[1]->s=(*parent)->fils[1]->s-(*parent)->fils[1]->cles[1]+(*parent)->fils[1]->cles[0];
+                        (*parent)->fils[1]->cles[1]=(*parent)->fils[1]->cles[0];
+                    }
                 }
             }else{
                 if(pos2==(*parent)->t-1){
+                    (*a)->s=(*a)->s-(*a)->cles[1]+(*parent)->cles[pos2-1];
                     (*a)->cles[1]=(*parent)->cles[pos2-1];
+                    (*parent)->s=(*parent)->s-(*parent)->cles[pos2-1]+(*parent)->fils[pos2-1]->cles[(*parent)->fils[pos2-1]->t-1];
                     (*parent)->cles[pos2-1]=(*parent)->fils[pos2-1]->cles[(*parent)->fils[pos2-1]->t-1];
+                    if((*parent)->fils[pos2-1]->t==2)(*parent)->fils[pos2-1]->s-= (*parent)->fils[pos2-1]->cles[ (*parent)->fils[pos2-1]->t-1]; // A verifier
+                    else(*parent)->fils[pos2-1]->s-= (*parent)->fils[pos2-1]->cles[ (*parent)->fils[pos2-1]->t-2];
                     (*parent)->fils[pos2-1]->t--;
-                    if((*parent)->fils[pos2-1]->t==3)(*parent)->fils[pos2-1]->cles[1]=(*parent)->fils[pos2-1]->cles[0];
+                    if((*parent)->fils[pos2-1]->t==3){
+                        (*parent)->fils[pos2-1]->s-= (*parent)->fils[pos2-1]->cles[1]+(*parent)->fils[pos2-1]->cles[0]; 
+                        (*parent)->fils[pos2-1]->cles[1]=(*parent)->fils[pos2-1]->cles[0];
+                    }
                 }else{
+                    (*a)->s=(*a)->s-(*a)->cles[1]+(*parent)->cles[pos2];
                     (*a)->cles[1]=(*parent)->cles[pos2];
+                    (*parent)->s=(*parent)->s-(*parent)->cles[pos2]+(*parent)->fils[pos2+1]->cles[0];
                     (*parent)->cles[pos2]=(*parent)->fils[pos2+1]->cles[0];
                     if((*parent)->fils[pos2+1]->t==4){
+                        (*parent)->fils[pos2+1]->s=(*parent)->fils[pos2+1]->s-(*parent)->fils[pos2+1]->cles[0]-(*parent)->fils[pos2+1]->cles[1]+(*parent)->fils[pos2+1]->cles[1]+(*parent)->fils[pos2+1]->cles[2];
                         (*parent)->fils[pos2+1]->cles[0]=(*parent)->fils[pos2+1]->cles[1];
                         (*parent)->fils[pos2+1]->cles[1]=(*parent)->fils[pos2+1]->cles[2];
                     }
+                    if((*parent)->fils[pos2+1]->t==2)(*parent)->fils[pos2+1]->s=(*parent)->fils[pos2+1]->s-(*parent)->fils[pos2+1]->cles[(*parent)->fils[pos2+1]->t-1]; // A verifier
+                    else (*parent)->fils[pos2+1]->s=(*parent)->fils[pos2+1]->s-(*parent)->fils[pos2+1]->cles[(*parent)->fils[pos2+1]->t-2];
                     (*parent)->fils[pos2+1]->t--;
                 }
             }
         break;
         case 3:
-            if(pos1==1)(*a)->cles[1]=(*a)->cles[0];
+            if(pos1==1){
+                (*a)->s-=(*a)->cles[1];
+                (*a)->cles[1]=(*a)->cles[0];
+            }else (*a)->s-=(*a)->cles[0];
+            (*a)->t--;
+            break;
         default:
+            (*a)->s-=(*a)->cles[pos1];
             for(int i=pos1;i<(*a)->t-2;i++){
                 (*a)->cles[i]=(*a)->cles[i+1];
             }
@@ -427,29 +393,34 @@ void detruire_clef_feuille(Arbre234* a, Arbre234* parent, int pos1,int pos2){
     return;
 }
 
+void Detruire_Cle(Arbre234 *a,Arbre234 *parent, int cle,int num_f);
+
+
+
+
 void Detruire_Cle_Noeud(Arbre234 a,int pos){
     if(a->t==0)return;
     if(a->fils[pos]!=NULL && a->fils[pos]->t!=2){
+        a->s=a->s- a->cles[pos]+a->fils[pos]->cles[a->fils[pos]->t-2];
         a->cles[pos]=a->fils[pos]->cles[a->fils[pos]->t-2];
-        detruire_clef_feuille(&(a->fils[pos]),&a,a->fils[pos]->t-2,pos);
-    }else if(a->fils[pos+1]!=NULL && a->fils[pos+1]->t==2){
-        a->fils[pos]->cles[0]=a->fils[pos]->cles[1];
-        a->fils[pos]->cles[1]=a->fils[pos+1]->cles[1];
-        for(int i=pos;i<a->t-2;i++){
-                a->cles[i]=a->cles[i+1];
-                a->fils[i+1]=a->fils[i+2];
-            }
-            a->t--;
+        Detruire_Cle(&(a->fils[pos]),&a,a->cles[pos],pos);
     }else{
+        a->s=a->s- a->cles[pos]+a->fils[pos+1]->cles[0];
         a->cles[pos]=a->fils[pos+1]->cles[0];
-        detruire_clef_feuille(&(a->fils[pos+1]),&a,0,pos+1);
+        Detruire_Cle(&(a->fils[pos+1]),&a,a->cles[pos],pos+1);
     }
 }
+
+
+
+
+
 
 void doit_fusionner(Arbre234 a){
     if(a==NULL || a->t==0)return;
     if(a->t==2 && a->fils[1]->t==2 && a->fils[2]->t==2){
         a->t=4;
+        a->s+=a->fils[1]->cles[1]+a->fils[2]->cles[1];
         a->cles[0]=a->fils[1]->cles[1];
         a->cles[2]=a->fils[2]->cles[1];
         a->fils[0]=a->fils[1]->fils[1];
@@ -461,7 +432,9 @@ void doit_fusionner(Arbre234 a){
             if(a->fils[i]->t==2 && a->fils[i+1]->t==2){
                 if(a->t==3){
                     if(i==0){
+                        a->s-=a->cles[0];
                         a->t=2;
+                        a->fils[1]->s=a->fils[1]->s+a->cles[0]+a->fils[0]->cles[1];// a verif
                         a->fils[1]->t=4;
                         a->fils[1]->cles[2]=a->fils[1]->cles[1];
                         a->fils[1]->cles[1]=a->cles[0];
@@ -471,7 +444,9 @@ void doit_fusionner(Arbre234 a){
                         a->fils[1]->fils[0]=a->fils[0]->fils[1];
                         a->fils[1]->fils[1]=a->fils[0]->fils[2];
                     }else{
+                        a->s-=a->cles[1];
                         a->t=2;
+                        a->fils[2]->s=a->fils[2]->s+a->cles[1]+a->fils[1]->cles[1];// a verif
                         a->fils[2]->t=4;
                         a->fils[2]->cles[2]=a->fils[2]->cles[1];
                         a->fils[2]->cles[1]=a->cles[1];
@@ -485,10 +460,12 @@ void doit_fusionner(Arbre234 a){
 
                     }
                 }else{
+                    a->fils[i]->s= a->fils[i]->s+a->cles[i]+a->fils[i+1]->cles[1];
                     a->fils[i]->t=4;
                     a->fils[i]->cles[0]=a->fils[i]->cles[1];
                     a->fils[i]->cles[1]=a->cles[i];
                     a->fils[i]->cles[2]=a->fils[i+1]->cles[1];
+                    a->s-=a->cles[i];
                     for(int j=i;j<a->t-2;j++){
                         a->cles[j]=a->cles[j+1];
                         a->fils[j+1]=a->fils[j+2];
@@ -503,7 +480,7 @@ void doit_fusionner(Arbre234 a){
 
 
 
-void Detruire_Cle_Liam(Arbre234 *a,Arbre234 *parent, int cle,int num_f){
+void Detruire_Cle(Arbre234 *a,Arbre234 *parent, int cle,int num_f){
     if((*a)==NULL || (*a)->t==0)return;
     int j=0;
     int i=0;
@@ -515,7 +492,7 @@ void Detruire_Cle_Liam(Arbre234 *a,Arbre234 *parent, int cle,int num_f){
         }else{
             Detruire_Cle_Noeud(*a,i+j);
         }
-    }else Detruire_Cle_Liam(&((*a)->fils[i+j]),a,cle,i+j);
+    }else Detruire_Cle(&((*a)->fils[i+j]),a,cle,i+j);
     doit_fusionner(*a);
     return;
 }
@@ -547,7 +524,7 @@ int main(int argc, char **argv)
     Arbre234 res;
     int cles[20]={50,2,3,10,7,1,280,80,500,301,200,12,375,13,11,252,1000,82,40,6};
     for (int i=0;i<20;i++){
-		res=RechercherCle2(a, cles[i]);
+		res=RechercherCle(a, cles[i]);
 		if (res==NULL){printf("res recherche cle %d = null\n",cles[i]);}
 		else{printf("res recherche cle %d = %d\n",cles[i],res->cles[1]);}
 	}
@@ -594,28 +571,34 @@ int main(int argc, char **argv)
     afficher_arbre(TestRemovekeyNode,0);
     //int indice = IndiceKeyMaxFromNode(&(TestRemovekeyNode->fils[2]));
     //printf("indice clef max test truc bidule : %d (%d)\n",indice,TestRemovekeyNode->fils[2]->cles[indice]);
-    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,keytoremove,0);
+    Detruire_Cle(&TestRemovekeyNode,NULL,keytoremove,0);
     printf("Arbre avec clé %d supprimé :\n",keytoremove);
     afficher_arbre(TestRemovekeyNode,0);
 
-    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,30,0);
+    Detruire_Cle(&TestRemovekeyNode,NULL,30,0);
     printf("Arbre avec clé %d supprimé :\n",30);
     afficher_arbre(TestRemovekeyNode,0);
 
-    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,80,0);
+
+    Detruire_Cle(&TestRemovekeyNode,NULL,80,0);
     printf("Arbre avec clé %d supprimé :\n",80);
     afficher_arbre(TestRemovekeyNode,0);
 
-    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,10,0);
+
+  
+    Detruire_Cle(&TestRemovekeyNode,NULL,10,0);
     printf("Arbre avec clé %d supprimé :\n",10);
     afficher_arbre(TestRemovekeyNode,0);
 
-    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,20,0);
+
+    Detruire_Cle(&TestRemovekeyNode,NULL,20,0);
     printf("Arbre avec clé %d supprimé :\n",20);
     afficher_arbre(TestRemovekeyNode,0);
 
 
-    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,200,0);
+
+ 
+    Detruire_Cle(&TestRemovekeyNode,NULL,200,0);
     printf("Arbre avec clé %d supprimé :\n",200);
     afficher_arbre(TestRemovekeyNode,0);
 
@@ -628,5 +611,13 @@ int main(int argc, char **argv)
 
     printf("La somme2 des clefs de l'arbre est %d \n",res3);
 
+    res3=somme_cles(TestRemovekeyNode);
+
+    printf("La somme des clefs de l'arbre est %d \n",res3);
+
+    res3=somme_cles2(TestRemovekeyNode);
+
+    printf("La somme2 des clefs de l'arbre est %d \n",res3);
+    
     return 0;
 }
