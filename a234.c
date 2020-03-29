@@ -337,6 +337,7 @@ void detruire_clef_feuille(Arbre234* a, Arbre234* parent, int pos1,int pos2){
                     else(*parent)->fils[pos2+1]->s-= (*parent)->fils[pos2+1]->cles[ (*parent)->fils[pos2+1]->t-2];
                     (*parent)->fils[pos2+1]->t--;
                 }else{
+                    printf("ICI");
                     (*a)->s=(*a)->s-(*a)->cles[1]+(*parent)->cles[1];
                     (*a)->cles[1]=(*parent)->cles[1];
                     (*parent)->s=(*parent)->s-(*parent)->cles[0]+(*parent)->fils[1]->cles[(*parent)->fils[1]->t-1];
@@ -434,7 +435,7 @@ void doit_fusionner(Arbre234 a){
                     if(i==0){
                         a->s-=a->cles[0];
                         a->t=2;
-                        a->fils[1]->s=a->fils[1]->s+a->cles[0]+a->fils[0]->cles[1];// a verif
+                        a->fils[1]->s=a->fils[1]->s+a->cles[0]+a->fils[0]->cles[1];
                         a->fils[1]->t=4;
                         a->fils[1]->cles[2]=a->fils[1]->cles[1];
                         a->fils[1]->cles[1]=a->cles[0];
@@ -446,7 +447,7 @@ void doit_fusionner(Arbre234 a){
                     }else{
                         a->s-=a->cles[1];
                         a->t=2;
-                        a->fils[2]->s=a->fils[2]->s+a->cles[1]+a->fils[1]->cles[1];// a verif
+                        a->fils[2]->s=a->fils[2]->s+a->cles[1]+a->fils[1]->cles[1];
                         a->fils[2]->t=4;
                         a->fils[2]->cles[2]=a->fils[2]->cles[1];
                         a->fils[2]->cles[1]=a->cles[1];
