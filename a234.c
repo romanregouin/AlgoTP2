@@ -380,7 +380,10 @@ void detruire_clef_feuille(Arbre234* a, Arbre234* parent, int pos1,int pos2){
     switch ((*a)->t){
         case 0:return;
         case 2:
-            if(parent==NULL)(*a)->t=0;
+            if(parent==NULL){
+                (*a)->t=0;
+                return;
+            }
             if((*parent)->t==2){
                 if(pos2==1){
                     (*a)->cles[1]=(*parent)->cles[1];
@@ -412,6 +415,8 @@ void detruire_clef_feuille(Arbre234* a, Arbre234* parent, int pos1,int pos2){
                 }
             }
         break;
+        case 3:
+            if(pos1==1)(*a)->cles[1]=(*a)->cles[0];
         default:
             for(int i=pos1;i<(*a)->t-2;i++){
                 (*a)->cles[i]=(*a)->cles[i+1];
@@ -424,10 +429,10 @@ void detruire_clef_feuille(Arbre234* a, Arbre234* parent, int pos1,int pos2){
 
 void Detruire_Cle_Noeud(Arbre234 a,int pos){
     if(a->t==0)return;
-    if(a->fils[pos]->t!=2){
+    if(a->fils[pos]!=NULL && a->fils[pos]->t!=2){
         a->cles[pos]=a->fils[pos]->cles[a->fils[pos]->t-2];
         detruire_clef_feuille(&(a->fils[pos]),&a,a->fils[pos]->t-2,pos);
-    }else if(a->fils[pos+1]->t==2){
+    }else if(a->fils[pos+1]!=NULL && a->fils[pos+1]->t==2){
         a->fils[pos]->cles[0]=a->fils[pos]->cles[1];
         a->fils[pos]->cles[1]=a->fils[pos+1]->cles[1];
         for(int i=pos;i<a->t-2;i++){
@@ -504,11 +509,11 @@ void Detruire_Cle_Liam(Arbre234 *a,Arbre234 *parent, int cle,int num_f){
     int i=0;
     if((*a)->t==2)j=1;
     for(;i<(*a)->t-1 && (*a)->cles[i+j]<cle;i++);
-    if(cle==(*a)->cles[i+j]){
+    if(i+j<(*a)->t && cle==(*a)->cles[i+j]){
         if(feuille(*a)){
             detruire_clef_feuille(a,parent,i,num_f);
         }else{
-            Detruire_Cle_Noeud(*a,i);
+            Detruire_Cle_Noeud(*a,i+j);
         }
     }else Detruire_Cle_Liam(&((*a)->fils[i+j]),a,cle,i+j);
     doit_fusionner(*a);
@@ -593,14 +598,28 @@ int main(int argc, char **argv)
     printf("Arbre avec clé %d supprimé :\n",keytoremove);
     afficher_arbre(TestRemovekeyNode,0);
 
-    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,3,0);
-    printf("Arbre avec clé %d supprimé :\n",3);
+    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,30,0);
+    printf("Arbre avec clé %d supprimé :\n",30);
     afficher_arbre(TestRemovekeyNode,0);
 
-    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,11,0);
-    printf("Arbre avec clé %d supprimé :\n",11);
+    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,80,0);
+    printf("Arbre avec clé %d supprimé :\n",80);
     afficher_arbre(TestRemovekeyNode,0);
 
+    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,10,0);
+    printf("Arbre avec clé %d supprimé :\n",10);
+    afficher_arbre(TestRemovekeyNode,0);
+
+    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,20,0);
+    printf("Arbre avec clé %d supprimé :\n",20);
+    afficher_arbre(TestRemovekeyNode,0);
+
+
+    Detruire_Cle_Liam(&TestRemovekeyNode,NULL,200,0);
+    printf("Arbre avec clé %d supprimé :\n",200);
+    afficher_arbre(TestRemovekeyNode,0);
+
+    
     res3=somme_cles(a);
 
     printf("La somme des clefs de l'arbre est %d \n",res3);
